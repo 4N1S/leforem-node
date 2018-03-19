@@ -12,7 +12,7 @@ npm install leforem-node
 ```
 
 ```javasctipt
-var v = require('leforem-node');
+var foremclient = require('leforem-node');
 ```
 
 ```javasctipt
