@@ -22,7 +22,7 @@ var client = new foremclient();
 
 ```
 
-## SNCF API
+## Leforem API
 
 The forem Api is the open API for building cool stuff with jobs data. 
 
