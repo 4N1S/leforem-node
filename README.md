@@ -8,11 +8,11 @@ This projects helps you to make HTTP requests to the Forem API.
 ## Installation
 
 ```sh
-npm install forem-node
+npm install leforem-node
 ```
 
 ```javasctipt
-var iralclient = require('forem-node');
+var v = require('leforem-node');
 ```
 
 ```javasctipt
