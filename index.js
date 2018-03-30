@@ -1,11 +1,10 @@
+const _ = require('underscore'),
+	  https = require('https'),
+	  crypto = require('crypto'),
+	  url = require('url'),
+	  urlencode = require('urlencode'),
 
-let _ = require('underscore');
- 	https = require('https'),
- 	crypto = require('crypto'),
-	url = require('url'),
- 	urlencode = require('urlencode');
-
-let forem = function(key,secret,verbose) {
+const forem = function(key,secret,verbose) {
 	this.verbose = verbose || false;
 	this.version = "0.0.3";
 	this.key = key;
@@ -35,9 +34,9 @@ forem.prototype.stream = function(q,location,callback) {
     const timestamp=Date.now();
     console.log("S! Stream Initialization");
     console.log(this.uri +"fromQuickSearch?updateTimeStamp="+timestamp+"&pageSize=10&location="+location+"&query="+q);
-    // this.pubRequest("fromQuickSearch?updateTimeStamp="+timestamp+"&pageSize=10&location="+location+"&query="+q, {}, function(err, data) {
-    // 	return callback(data.offers,data.count,timestamp);
-    // });
+    this.pubRequest("fromQuickSearch?updateTimeStamp="+timestamp+"&pageSize=10&location="+location+"&query="+q, {}, function(err, data) {
+    	return callback(data.offers,data.count,timestamp);
+    });
 	setInterval(()=>{
 		let timestamp=Date.now();
 	    this.pubRequest("fromQuickSearch?updateTimeStamp="+timestamp+"&pageSize=10&location="+location+"&query="+q, {}, function(err, data) {
