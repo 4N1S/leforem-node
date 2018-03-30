@@ -1,13 +1,13 @@
 
-var _ = require('underscore');
-var https = require('https');
-var crypto = require('crypto');
-var url = require('url');
-var urlencode = require('urlencode');
+let _ = require('underscore');
+ 	https = require('https'),
+ 	crypto = require('crypto'),
+	url = require('url'),
+ 	urlencode = require('urlencode');
 
-var forem = function(key,secret,verbose) {
+let forem = function(key,secret,verbose) {
 	this.verbose = verbose || false;
-	this.version = "0.0.1";
+	this.version = "0.0.3";
 	this.key = key;
 	this.secret = secret;
 	this.host = "www.leforem.be";
@@ -17,7 +17,7 @@ var forem = function(key,secret,verbose) {
 	this.request_options = {
 		method: 'GET',
 		headers: {
-			"User-Agent": "forem-node",
+			"User-Agent": this.userAgent,
 			"Content-Type": "application/x-www-form-urlencoded"
 		}
 	}
@@ -31,19 +31,16 @@ forem.prototype.search = function(resultat,page,q,location,callback) {
 	});
 }
 forem.prototype.stream = function(q,location,callback) {
-	var duration=30000;
-    var self = this; // this creates a closure
-    var location=location;
-    var q=q;
-    var timestamp=Date.now();
+	const duration=5000;
+    const timestamp=Date.now();
     console.log("S! Stream Initialization");
     console.log(this.uri +"fromQuickSearch?updateTimeStamp="+timestamp+"&pageSize=10&location="+location+"&query="+q);
-    self.pubRequest("fromQuickSearch?updateTimeStamp="+timestamp+"&pageSize=10&location="+location+"&query="+q, {}, function(err, data) {
-    	return callback(data.offers,data.count,timestamp);
-    });
-	setInterval(function(){
-		var timestamp=Date.now();
-	    self.pubRequest("fromQuickSearch?updateTimeStamp="+timestamp+"&pageSize=10&location="+location+"&query="+q, {}, function(err, data) {
+    // this.pubRequest("fromQuickSearch?updateTimeStamp="+timestamp+"&pageSize=10&location="+location+"&query="+q, {}, function(err, data) {
+    // 	return callback(data.offers,data.count,timestamp);
+    // });
+	setInterval(()=>{
+		let timestamp=Date.now();
+	    this.pubRequest("fromQuickSearch?updateTimeStamp="+timestamp+"&pageSize=10&location="+location+"&query="+q, {}, function(err, data) {
 
 			return callback(data.offers,data.count,timestamp);
 		});
@@ -52,19 +49,21 @@ forem.prototype.stream = function(q,location,callback) {
 
 }
 forem.prototype.pubRequest = function(method, params, callback) {
-	var options = {
+	const options = {
 	  hostname: this.host,
 	  path: this.uri + method,
 	  port: 443,
-	  method: 'GET',
-	  verbose: this.verbose
+	  method: this.request_options.method,
+	  verbose: this.verbose,
+	  headers: this.request_options.headers,
+
 	};
-	cb = function(response,reject) {
+	cb = function(response) {
 		if (response.statusCode < 200 || response.statusCode > 299) {
 		   callback(response.statusCode);
 		 }
 		if(response.statusCode==200){
-		var str = '';
+		let str = '';
 		response.on('data', function (chunk) {
 			str += chunk;
 			if (options.verbose) console.log(str);
@@ -72,7 +71,7 @@ forem.prototype.pubRequest = function(method, params, callback) {
 
 
 		response.on('end', function () {
-			var objFromJSON;
+			let objFromJSON;
 			try {
 				objFromJSON = JSON.parse(str);
 				return callback(null, objFromJSON);
@@ -83,7 +82,7 @@ forem.prototype.pubRequest = function(method, params, callback) {
 		});
 		}
 	}
-	var req = https.request(options, cb);
+	let req = https.request(options, cb);
 	req.on('error', function(err) {
 		callback(err.status, null);
 	});
