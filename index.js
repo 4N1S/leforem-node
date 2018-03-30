@@ -2,7 +2,7 @@ const _ = require('underscore'),
 	  https = require('https'),
 	  crypto = require('crypto'),
 	  url = require('url'),
-	  urlencode = require('urlencode'),
+	  urlencode = require('urlencode');
 
 const forem = function(key,secret,verbose) {
 	this.verbose = verbose || false;
